@@ -19,15 +19,16 @@ namespace AsyncAwait.Task2.CodeReviewChallenge.Models.Support
         {
             try
             {
-                Task t = _supportService.RegisterSupportRequestAsync(requestInfo);
-                Console.WriteLine(t.Status); // this is for debugging purposes
+                await _supportService.RegisterSupportRequestAsync(requestInfo);
+
                 Thread.Sleep(5000); // this is just to be sure that the request is registered
-                return await _supportService.GetSupportInfoAsync(requestInfo)
-                    .ConfigureAwait(false);
+
+                string supportedInfo = await _supportService.GetSupportInfoAsync(requestInfo);
+                return supportedInfo;
             }
             catch (HttpRequestException ex)
             {
-                return await Task.Run(async () => await Task.FromResult($"Failed to register assistance request. Please try later. {ex.Message}"));
+                return $"Failed to register assistance request. Please try later. {ex.Message}";
             }
         }
     }
